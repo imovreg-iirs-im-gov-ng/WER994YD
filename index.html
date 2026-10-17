@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Verification Record</title>
+    <!-- Include Google Fonts for clean modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modern UI Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            /* Smoothly centers the mobile panel on desktop and sets up your background image */
+            background-image: url('background.png');
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #1e293b;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Layout Container matching the mobile panel style */
+        .wrapper {
+            background-color: #ffffff;
+            width: 92%;
+            max-width: 420px;
+            margin: 16px auto;
+            border-radius: 16px;
+            min-height: calc(100vh - 32px);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            padding: 20px 16px;
+            gap: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15); /* Adds professional depth against the background */
+            overflow-y: auto;
+        }
+
+        /* Top Bar Navigation */
+        .top-navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        .nav-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Card Panels Custom Formatting */
+        .panel-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        /* Main Plate Container Styling */
+        .plate-box-outer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 14px;
+        }
+
+        /* Recreating the digital license plate card graphic with pure CSS */
+        .license-plate-graphic {
+            background-color: #ffffff;
+            border: 4px solid #0f172a;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 280px;
+            padding: 4px 4px;
+            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.12);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .plate-inner-border {
+            border: 1px solid #cbd5e1;  /* The thin light grey/blue inner line */
+            border-radius: 8px;         /* Slightly smaller curved corners */
+            padding: 8px 12px;          /* Inner spacing around text */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .plate-state {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #64748b;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+        }
+
+        .plate-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            letter-spacing: 2px;
+            line-height: 1.1;
+            text-shadow: 1px 1px 0px #ffffff, 2px 2px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        .plate-type {
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: #94a3b8;
+            letter-spacing: 1.5px;
+            margin-top: 4px;
+        }
+
+        /* Active Badge Row */
+        .status-pill {
+            background-color: #dcfce7;
+            color: #15803d;
+            font-weight: 600;
+            font-size: 0.78rem;
+            padding: 5px 14px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-icon {
+            width: 12px;
+            height: 12px;
+            object-fit: contain;
+        }
+
+        .expiry-subtext {
+            font-size: 0.82rem;
+            color: #475569;
+        }
+        
+        .expiry-subtext strong {
+            color: #0f172a;
+        }
+
+        .document-count-summary {
+            margin-top: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .summary-shield-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .count-headline {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .count-subline {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        /* Section Headings with Small Icons */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 16px;
+        }
+
+        .section-icon {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+
+        /* Verified Documents Mini-Cards List */
+        .docs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .doc-item {
+            background-color: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 10px;
+            padding: 14px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+            position: relative;
+        }
+
+        .doc-row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+
+        .doc-name {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .mini-badge {
+            background-color: #dcfce7;
+            color: #16a34a;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
+        }
+
+        .doc-date-line {
+            font-size: 0.78rem;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+        }
+
+        .doc-date-line span strong {
+            color: #334155;
+            font-weight: 500;
+        }
+
+        /* Registered Owner Info Layout */
+        .owner-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .owner-avatar {
+            background-color: #dcfce7;
+            color: #16a34a;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .owner-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .owner-name {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .owner-role {
+            font-size: 0.78rem;
+            color: #64748b;
+        }
+
+        /* Vehicle Technical Details Parameters Grid */
+        .details-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .data-input-box {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .data-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-value {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Specialized Styling for the Protected Chassis/VIN entry */
+        .vin-box {
+            display: flex;
+            flex-direction: row !important;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vin-shield {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        
+        <!-- Navbar Header Area -->
+        <div class="top-navbar">
+            <div class="nav-title">
+                <img src="car-icon.png" alt="Vehicle Icon" class="nav-icon">
+                Vehicle Verification Record
+            </div>
+            <button class="close-btn" aria-label="Close">&times;</button>
+        </div>
+
+        <!-- 1. Top Core Overview Panel Card -->
+        <div class="panel-card plate-box-outer">
+            <!-- Rendered License Plate UI -->
+            <div class="license-plate-graphic">
+                <div class="plate-inner-border">
+                    <span class="plate-state">IMO STATE</span>
+                    <span class="plate-number">WER994YD</span>
+                    <span class="plate-type">COMMERCIAL</span>
+                </div>
+            </div>
+
+            <!-- Status Pill Badge -->
+            <div>
+                <span class="status-pill">
+                    <img src="check-icon.png" alt="Success" class="status-icon">
+                    ACTIVE
+                </span>
+            </div>
+
+            <!-- Expiry Context -->
+            <p class="expiry-subtext">Expires: <strong>Oct 17, 2027</strong></p>
+
+            <!-- Integrity Protection Vector Badge -->
+            <div class="document-count-summary">
+                <img src="shield-bright.png" alt="Secure Shield" class="summary-shield-icon">
+                <span class="count-headline">4 Active Documents Found</span>
+                <span class="count-subline">out of 4 total registered documents</span>
+            </div>
+        </div>
+
+        <!-- 2. Verified Documents Listing Card -->
+        <div class="panel-card">
+            <div class="section-title">
+                <img src="shield-dark.png" alt="Verified Shield" class="section-icon">
+                Verified Documents
+            </div>
+
+            <div class="docs-list">
+                <!-- Doc item 1 -->
+                <div class="doc-item">
+                    <div class="doc-row-top">
+                        <span class="doc-name">Vehicle License</span>
+                        <span class="mini-badge">Active</span>
+                    </div>
+                    <div class="doc-date-line">
+                        <span>Issued: <strong>Oct 17, 2026</strong></span>
+                    </div>
+                    <div class="doc-date-line">
+                        <span>Expiry:</span>
+                        <span><strong>Oct 17, 2027</strong></span>
+                    </div>
+                </div>
+
+                <!-- Doc item 2 -->
+                <div class="doc-item">
+                    <div class="doc-row-top">
+                        <span class="doc-name">Proof of Ownership</span>
+                        <span class="mini-badge">Active</span>
+                    </div>
+                    <div class="doc-date-line">
+                        <span>Issued: <strong>Oct 17, 2026</strong></span>
+                    </div>
+                    <div class="doc-date-line">
+                        <span>Expiry:</span>
+                        <span><strong>Oct 17, 2027</strong></span>
+                    </div>
+                </div>
+
+                <!-- Doc item 3 -->
+                <div class="doc-item">
+                    <div class="doc-row-top">
+                        <span class="doc-name">Road Worthiness</span>
+                        <span class="mini-badge">Active</span>
+                    </div>
+                    <div class="doc-date-line">
+                        <span>Issued: <strong>Oct 17, 2026</strong></span>
+                    </div>
+                    <div class="doc-date-line">
+                        <span>Expiry:</span>
+                        <span><strong>Apr 17, 2027</strong></span>
+                    </div>
+                </div>
+
+                <!-- Doc item 4 -->
+                <div class="doc-item">
+                    <div class="doc-row-top">
+                        <span class="doc-name">Hackney Permit</span>
+                        <span class="mini-badge">Active</span>
+                    </div>
+                    <div class="doc-date-line">
+                        <span>Issued: <strong>Oct 17, 2026</strong></span>
+                    </div>
+                    <div class="doc-date-line">
+                        <span>Expiry:</span>
+                        <span><strong>Oct 17, 2027</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Registered Owner Account Profile Card -->
+        <div class="panel-card">
+            <div class="section-title">
+                <img src="user-icon.png" alt="User Details" class="section-icon">
+                Registered Owner Details
+            </div>
+            <div class="owner-profile">
+                <div class="owner-avatar">IW</div>
+                <div class="owner-info">
+                    <span class="owner-name">Isaac Wonor</span>
+                    <span class="owner-role">Registered Taxpayer</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Technical Specifications Detail Parameters Card -->
+        <div class="panel-card">
+            <div class="section-title">
+                <img src="vehicle-details.png" alt="Vehicle Details Shield" class="section-icon">
+                Vehicle Details
+            </div>
+            
+            <div class="details-stack">
+                <!-- VIN/Chassis Info Box -->
+                <div class="data-input-box vin-box">
+                    <div>
+                        <div class="data-label">VIN / Chassis</div>
+                        <div class="data-value">VPE25079XXXXXX</div>
+                    </div>
+                    <img src="shield-checkered.png" alt="Protected" class="vin-shield">
+                </div>
+
+                <!-- Engine Number Info Box -->
+                <div class="data-input-box">
+                    <div class="data-label">Engine Number</div>
+                    <div class="data-value">KA20083591X</div>
+                </div>
+
+                <!-- Vehicle Make Info Box -->
+                <div class="data-input-box">
+                    <div class="data-label">Vehicle Make</div>
+                    <div class="data-value">Nissan</div>
+                </div>
+
+                <!-- Vehicle Model Info Box -->
+                <div class="data-input-box">
+                    <div class="data-label">Vehicle Model</div>
+                    <div class="data-value">Caravan</div>
+                </div>
+
+                <!-- Year of Manufacture Info Box -->
+                <div class="data-input-box">
+                    <div class="data-label">Year of Manuf.</div>
+                    <div class="data-value">2010</div>
+                </div>
+
+                <!-- Body Type Info Box -->
+                <div class="data-input-box">
+                    <div class="data-label">Body Type</div>
+                    <div class="data-value">Bus</div>
+                </div>
+
+                <!-- Color Info Box -->
+                <div class="data-input-box">
+                    <div class="data-label">Color</div>
+                    <div class="data-value">CUSTOM</div>
+                </div>
+
+                <!-- Engine Cap Info Box -->
+                <div class="data-input-box">
+                    <div class="data-label">Engine Cap.</div>
+                    <div class="data-value">Above 3.0</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
